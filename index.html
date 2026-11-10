@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Projeto de Extensão — Entidade X</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --brand-primary: #1e3a5f;
+        --brand-primary-hover: #162d4a;
+        --brand-accent: #0f766e;
+        --brand-accent-hover: #115e59;
+        --surface: #ffffff;
+        --page: #f3f6fa;
+        --text-main: #243247;
+        --text-muted: #64748b;
+        --border: #dbe3ed;
+      }
+
+      html { scroll-behavior: smooth; }
+      body {
+        font-family: 'Inter', sans-serif;
+        background: var(--page);
+        color: var(--text-main);
+      }
+      button, a { transition: background-color .18s ease, color .18s ease, box-shadow .18s ease; }
+      button:focus-visible, a:focus-visible {
+        outline: 3px solid rgba(15, 118, 110, .35);
+        outline-offset: 2px;
+      }
+      .brand-title { color: var(--brand-primary); letter-spacing: -.035em; }
+      .brand-nav a { color: #40536b; font-weight: 500; }
+      .brand-nav a:hover { color: var(--brand-accent); }
+      .brand-panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        box-shadow: 0 8px 24px rgba(30, 58, 95, .06);
+      }
+      .brand-button {
+        background: var(--brand-primary);
+        box-shadow: 0 2px 5px rgba(30, 58, 95, .14);
+      }
+      .brand-button:hover { background: var(--brand-primary-hover); }
+      .brand-accent-button { background: var(--brand-accent); }
+      .brand-accent-button:hover { background: var(--brand-accent-hover); }
+      .product-card {
+        overflow: hidden;
+        padding: 0;
+        border: 1px solid var(--border);
+        border-radius: .875rem;
+        background: #fff;
+        box-shadow: 0 3px 10px rgba(30, 58, 95, .04);
+        transition: transform .18s ease, box-shadow .18s ease;
+      }
+      .product-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(30, 58, 95, .09);
+      }
+      .product-card-content { padding: 1rem; }
+      .product-image-area {
+        display: flex;
+        min-height: 168px;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: linear-gradient(135deg, #edf2f8, #e5edf4);
+        color: #718096;
+      }
+      .product-image-area img {
+        width: 100%;
+        height: 168px;
+        object-fit: cover;
+      }
+      .product-image-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: .5rem;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .02em;
+      }
+      .product-image-placeholder svg { width: 34px; height: 34px; opacity: .65; }
+      .cart-remove {
+        background: #e9eef4;
+        color: #334155;
+      }
+      .cart-remove:hover { background: #dbe4ee; }
+      footer { border-top: 1px solid var(--border); }
+    </style>
+    <!-- Manifest PWA -->
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <!-- Cor do tema do app (PWA) -->
+    <meta name="theme-color" content="#1e3a5f" />
+  </head>
+  <body class="min-h-screen bg-slate-100 text-slate-800">
+    <!-- Link pular para conteúdo (Acessibilidade) -->
+    <a
+      href="#conteudo-principal"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 brand-button text-white px-3 py-2 rounded"
+    >
+      Ir para o conteúdo principal
+    </a>
+    <header class="max-w-5xl mx-auto px-4 py-8">
+      <h1 class="text-3xl md:text-4xl font-extrabold brand-title">Projeto de Extensão — Entidade X</h1>
+      <p class="mt-2 text-slate-600">Site acessível, responsivo e instalável (PWA).</p>
+    </header>
+    <main id="conteudo-principal" class="max-w-5xl mx-auto px-4 pb-24" tabindex="-1">
+      <div id="app">
+        <!-- Navegação responsiva -->
+        <nav class="brand-nav mt-4 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm" aria-label="Navegação principal">
+          <button
+            class="md:hidden inline-flex items-center gap-2 rounded brand-button px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-teal-600"
+            @click="menuAberto = !menuAberto"
+            :aria-expanded="menuAberto.toString()"
+            aria-controls="menu-principal"
+          >
+            ☰ Menu
+          </button>
+          <ul
+            id="menu-principal"
+            class="mt-3 md:mt-0 md:flex md:gap-7"
+            :class="menuAberto ? 'block' : 'hidden md:flex'"
+          >
+            <li>
+              <a
+                class="hover:underline focus:outline-none focus:ring-2 focus:ring-teal-600"
+                href="#inicio"
+                @click="menuAberto = false"
+              >
+                Início
+              </a>
+            </li>
+            <li>
+              <a
+                class="hover:underline focus:outline-none focus:ring-2 focus:ring-teal-600"
+                href="#sobre"
+                @click="menuAberto = false"
+              >
+                Sobre
+              </a>
+            </li>
+            <li>
+              <a
+                class="hover:underline focus:outline-none focus:ring-2 focus:ring-teal-600"
+                href="#contato"
+                @click="menuAberto = false"
+              >
+                Contato
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <!-- Seção de boas-vindas com contador reativo -->
+        <section
+          id="inicio"
+          aria-labelledby="sec-intro"
+          class="brand-panel p-6 mt-6"
+        >
+          <h2 id="sec-intro" class="text-xl font-semibold">Boas-vindas</h2>
+          <p class="mt-2">
+            Contador: <strong class="text-teal-700">{{ contador }}</strong>
+          </p>
+          <button
+            class="mt-4 inline-flex items-center gap-2 rounded-lg brand-button px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-teal-600"
+            aria-label="Somar um ao contador"
+            @click="contador++"
+          >
+            Somar +1
+          </button>
+        </section>
+        <section
+          id="sobre"
+          aria-labelledby="vitrine"
+          class="brand-panel p-6 mt-6"
+        >
+          <h2 id="vitrine" class="text-xl font-semibold">Vitrine</h2>
+          <div class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <article
+              v-for="p in produtos"
+              :key="p.id"
+              class="product-card"
+            >
+              <div class="product-image-area" aria-label="Imagem do item">
+                <img
+                  v-if="p.imagem"
+                  :src="p.imagem"
+                  :alt="'Imagem de ' + p.nome"
+                  loading="lazy"
+                />
+                <div v-else class="product-image-placeholder" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                    <circle cx="8.5" cy="9" r="1.5"></circle>
+                    <path d="m21 15-5-5L5 20"></path>
+                  </svg>
+                  <span>Imagem do item</span>
+                </div>
+              </div>
+              <div class="product-card-content">
+                <h3 class="font-semibold text-slate-800">{{ p.nome }}</h3>
+                <p class="mt-1 text-slate-600">R$ {{ p.preco.toFixed(2) }}</p>
+                <button
+                  class="mt-3 rounded-lg brand-accent-button px-4 py-2 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-teal-600"
+                  @click="adicionarCarrinho(p)"
+                  :aria-label="'Adicionar ' + p.nome + ' ao carrinho'"
+                >
+                  Adicionar
+                </button>
+              </div>
+            </article>
+          </div>
+        </section>
+        <section
+          id="contato"
+          aria-labelledby="carrinho"
+          class="brand-panel p-6 mt-6"
+        >
+          <h2 id="carrinho" class="text-xl font-semibold">Carrinho</h2>
+          <p class="mt-2">
+            Itens: <strong class="text-teal-700">{{ carrinho.length }}</strong>
+          </p>
+          <ul class="mt-3 space-y-2">
+            <li
+              v-for="(c, idx) in carrinho"
+              :key="idx"
+              class="flex items-center justify-between gap-3 border-b border-slate-200 pb-2"
+            >
+              <span>{{ c.nome }} — R$ {{ c.preco.toFixed(2) }}</span>
+              <button
+                class="cart-remove rounded-lg px-3 py-1.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-600"
+                @click="removerCarrinho(idx)"
+                :aria-label="'Remover ' + c.nome + ' do carrinho'"
+              >
+                Remover
+              </button>
+            </li>
+          </ul>
+          <p class="mt-4 text-sky-800 font-semibold">
+            Total: R$ {{ carrinho.reduce((t, p) => t + p.preco, 0).toFixed(2) }}
+          </p>
+        </section>
+      </div>
+    </main>
+    <footer class="max-w-5xl mx-auto mt-8 px-4 py-8 text-sm text-slate-500">
+      <p>2025 — Projeto de Extensão Front-end</p>
+    </footer>
+    <!-- Vue 3 (CDN, produção) -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <!-- App -->
+    <script src="main.js"></script>
+    <!-- Registro do Service Worker (PWA) -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js');
+        });
+      }
+    </script>
+  </body>
+</html>
